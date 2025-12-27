@@ -1,0 +1,58 @@
+#root {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.active {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.tasks-list {
+  display: flex;
+  margin-top: 20px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.task p {
+  margin: 0;
+  flex-grow: 1;
+  text-align: left;
+}
+
+.filter-buttons {
+  margin: 20px 0;
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-active {
+  background-color: #646cff;
+  color: white;
+}
+
+.btn-clear {
+  margin-left: 10px;
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.input-block {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}

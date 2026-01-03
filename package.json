@@ -2,7 +2,7 @@
   "name": "to-do-list",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://Vladb-code.github.io/ToDo-List/",
+  "homepage": "https://Vladb-code.github.io/todo-list-redux/",
   "type": "module",
   "scripts": {
     "dev": "vite",

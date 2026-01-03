@@ -7,7 +7,7 @@
 
 .active {
   text-decoration: line-through;
-  color: gray;
+  color: rgb(68, 67, 67);
 }
 
 .tasks-list {
@@ -22,8 +22,34 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+  padding: 8px;
+  background-color: #5530c4;
+  border-radius: 10px;
+  width: 300px;
+  height: 20px;
+}
+.input-edit {
+  border: none;
+  outline: none;
+  background: none;
+}
+.task-btns {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.task-btns button {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s, transform 0.1s;
+  color: white;
 }
 
 .task p {
@@ -41,7 +67,7 @@
 }
 
 .btn-active {
-  background-color: #646cff;
+  background-color: #5530c4;
   color: white;
 }
 
@@ -51,8 +77,42 @@
   color: white;
 }
 
+.todo-app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 700px;
+  background-color: #5530c4;
+}
+.box {
+  display: grid;
+  place-items: center;
+  width: 400px;
+  height: 600px;
+  background-color: #150735;
+  overflow-y: auto;
+  overflow-x: hidden;
+  color: white;
+}
 .input-block {
   display: flex;
   gap: 10px;
   justify-content: center;
+  border: 2px solid #5530c4;
+  background-color: none;
+}
+.input-add {
+  border: none;
+  outline: none;
+  background: none;
+  color: rgb(114, 112, 112);
+}
+
+.btn-add {
+  border: none;
+  outline: none;
+  background: #5530c4;
+  border-radius: 0;
+  color: white;
 }

@@ -1,17 +1,15 @@
-import { useContext } from "react";
-import { TaskContext } from "./TaskContext";
 import Task from "./Task";
+import { useSelector } from "react-redux";
 
 const ToDoList = () => {
-  const { tasks } = useContext(TaskContext);
+  const { value } = useSelector((store) => store.tasks);
 
   return (
     <div className="tasks-list">
-      {tasks.length === 0 ? (
-        <h1>пусто</h1>
-      ) : (
-        tasks.map((item) => <Task key={item.id} task={item} />)
-      )}
+      {value.length === 0 && <h1>пусто</h1>}
+      {value.map((item) => (
+        <Task key={item.id} task={item} />
+      ))}
     </div>
   );
 };

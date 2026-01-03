@@ -1,49 +1,59 @@
-import { useState, memo, useContext } from "react";
-import { TaskContext } from "./TaskContext";
+import { useDispatch } from "react-redux";
+import { createDeleteTaskAction } from "../actions/tasksActions";
+import { createEditTaskAction } from "../actions/tasksActions";
+import { createIsDoneCheckedAction } from "../actions/tasksActions";
+import { useState } from "react";
 
-const Task = memo(({ task }) => {
-  const { deleteTask, toggleTask, editTask } = useContext(TaskContext);
+const Task = ({ task }) => {
+  const dispatch = useDispatch();
   const [isEdit, setIsEdit] = useState(false);
   const [editText, setEditText] = useState(task.title);
 
   const saveEdit = () => {
-    if (editText.trim() !== "") {
-      editTask(task.id, editText.trim());
-      setIsEdit(false);
-    } else {
-      setEditText(task.title);
+    if (editText.trim()) {
+      dispatch(createEditTaskAction(task.id, editText));
       setIsEdit(false);
     }
   };
+  const handleDouwnEnter = (e) => {
+    if (e.key === "Enter") saveEdit();
+    if (e.key === "Escape") {
+      setIsEdit(false);
+      setEditText(task.title);
+    }
+  };
+  const handleDelete = () => {
+    dispatch(createDeleteTaskAction(task.id));
+  };
 
+  const isDoneChecked = () => {
+    dispatch(createIsDoneCheckedAction(task.id));
+  };
   return (
     <div className="task">
-      <input
-        type="checkbox"
-        checked={task.isDone}
-        onChange={() => toggleTask(task.id)}
-      />
-
-      {isEdit ? (
+      {!isEdit ? (
+        <p
+          className={task.isDone ? "active" : ""}
+          onClick={isDoneChecked}
+          style={{ cursor: "pointer", userSelect: "none" }}
+        >
+          {task.title}
+        </p>
+      ) : (
         <input
-          autoFocus
+          className="input-edit"
           value={editText}
           onChange={(e) => setEditText(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && saveEdit()}
-          onBlur={saveEdit}
+          onKeyDown={handleDouwnEnter}
         />
-      ) : (
-        <p className={task.isDone ? "active" : ""}>{task.title}</p>
       )}
-
       <div className="task-btns">
-        <button onClick={() => (isEdit ? saveEdit() : setIsEdit(true))}>
-          {isEdit ? "↩︎" : "🪄"}
-        </button>
-        <button onClick={() => deleteTask(task.id)}>🗑️</button>
+        <button onClick={() => setIsEdit(!isEdit)}>✍︎</button>
+
+        <button onClick={handleDelete}>☒</button>
       </div>
     </div>
   );
-});
+};
 
 export default Task;

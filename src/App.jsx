@@ -1,20 +1,19 @@
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Header from "./Header";
 import InputTask from "./InputTask";
 import ToDoList from "./ToDoList";
-import FilterButtons from "./FilterButtons";
-import { TaskProvider } from "./TaskContext";
 import "./App.css";
-function App() {
+
+const App = () => {
   return (
-    <div className="app-container">
-      <Header />
-      <TaskProvider>
+    <div className="todo-app">
+      <div className="box">
+        <Header />
         <InputTask />
         <ToDoList />
-        <FilterButtons />
-      </TaskProvider>
+      </div>
     </div>
   );
-}
+};
 
 export default App;

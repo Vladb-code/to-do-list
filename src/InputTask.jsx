@@ -1,27 +1,44 @@
-import { useState, useContext, memo } from "react";
-import { TaskContext } from "./TaskContext";
+import { useSelector, useDispatch } from "react-redux";
+import { createAddTaskAction } from "../actions/tasksActions";
 
-const InputTask = memo(() => {
-  const [text, setText] = useState("");
-  const { addTask } = useContext(TaskContext);
+const InputTask = () => {
+  const dispatch = useDispatch();
+  const { value } = useSelector((store) => store.text);
+
+  const handleChange = (e) => {
+    dispatch({ type: "change", payload: e.target.value });
+  };
+
+  const addNewTask = () => {
+    dispatch(createAddTaskAction(value));
+  };
 
   const handleClick = () => {
-    if (text.trim()) {
-      addTask(text.trim());
-      setText("");
+    addNewTask();
+    dispatch({ type: "zero" });
+  };
+
+  const handleDouwnEnter = (e) => {
+    if (e.key === "Enter") {
+      addNewTask();
+      dispatch({ type: "zero" });
     }
   };
 
   return (
     <div className="input-block">
       <input
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Введите текст задачи..."
+        className="input-add"
+        value={value}
+        onChange={handleChange}
+        onKeyDown={handleDouwnEnter}
+        placeholder="What is the task today?"
       />
-      <button onClick={handleClick}>Добавить</button>
+      <button className="btn-add" onClick={handleClick}>
+        Add task
+      </button>
     </div>
   );
-});
+};
 
 export default InputTask;

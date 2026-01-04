@@ -10,7 +10,9 @@ const InputTask = () => {
   };
 
   const addNewTask = () => {
-    dispatch(createAddTaskAction(value));
+    if (value.trim() !== "") {
+      dispatch(createAddTaskAction(value));
+    }
   };
 
   const handleClick = () => {

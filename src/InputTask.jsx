@@ -1,29 +1,29 @@
 import { useSelector, useDispatch } from "react-redux";
-import { createAddTaskAction } from "../actions/tasksActions";
-
+import { change, zero } from "./redux/inputTextSlice";
+import { add } from "./redux/taskSliсe";
 const InputTask = () => {
   const dispatch = useDispatch();
   const { value } = useSelector((store) => store.text);
 
   const handleChange = (e) => {
-    dispatch({ type: "change", payload: e.target.value });
+    dispatch(change(e.target.value));
   };
 
   const addNewTask = () => {
     if (value.trim() !== "") {
-      dispatch(createAddTaskAction(value));
+      dispatch(add(value));
     }
   };
 
   const handleClick = () => {
     addNewTask();
-    dispatch({ type: "zero" });
+    dispatch(zero());
   };
 
   const handleDouwnEnter = (e) => {
     if (e.key === "Enter") {
       addNewTask();
-      dispatch({ type: "zero" });
+      dispatch(zero());
     }
   };
 

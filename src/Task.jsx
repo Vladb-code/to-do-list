@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux";
-import { createDeleteTaskAction } from "../actions/tasksActions";
-import { createEditTaskAction } from "../actions/tasksActions";
-import { createIsDoneCheckedAction } from "../actions/tasksActions";
+
+import { deleteTask, edit, isDoneCheckedTask } from "./redux/taskSliсe";
 import { useState } from "react";
 
 const Task = ({ task }) => {
@@ -11,7 +10,7 @@ const Task = ({ task }) => {
 
   const saveEdit = () => {
     if (editText.trim()) {
-      dispatch(createEditTaskAction(task.id, editText));
+      dispatch(edit({ id: task.id, newTitle: editText }));
       setIsEdit(false);
     }
   };
@@ -23,11 +22,11 @@ const Task = ({ task }) => {
     }
   };
   const handleDelete = () => {
-    dispatch(createDeleteTaskAction(task.id));
+    dispatch(deleteTask(task.id));
   };
 
   const isDoneChecked = () => {
-    dispatch(createIsDoneCheckedAction(task.id));
+    dispatch(isDoneCheckedTask(task.id));
   };
   return (
     <div className="task">

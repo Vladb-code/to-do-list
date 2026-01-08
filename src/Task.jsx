@@ -1,6 +1,13 @@
 import { useDispatch } from "react-redux";
 
-import { deleteTask, edit, isDoneCheckedTask } from "./redux/taskSliсe";
+import {
+  deleteTask,
+  deleteTasks,
+  edit,
+  editTasks,
+  isDoneCheckedTask,
+  isDoneCheckedTasks,
+} from "./redux/taskSlice";
 import { useState } from "react";
 
 const Task = ({ task }) => {
@@ -10,7 +17,7 @@ const Task = ({ task }) => {
 
   const saveEdit = () => {
     if (editText.trim()) {
-      dispatch(edit({ id: task.id, newTitle: editText }));
+      dispatch(editTasks({ id: task.id, newTitle: editText }));
       setIsEdit(false);
     }
   };
@@ -22,11 +29,11 @@ const Task = ({ task }) => {
     }
   };
   const handleDelete = () => {
-    dispatch(deleteTask(task.id));
+    dispatch(deleteTasks(task.id));
   };
 
   const isDoneChecked = () => {
-    dispatch(isDoneCheckedTask(task.id));
+    dispatch(isDoneCheckedTasks(task.id));
   };
   return (
     <div className="task">

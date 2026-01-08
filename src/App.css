@@ -25,9 +25,12 @@
   padding: 8px;
   background-color: #5530c4;
   border-radius: 10px;
-  width: 300px;
+
+  max-width: 300px;
   height: 20px;
+  margin-right: 10px;
 }
+
 .input-edit {
   border: none;
   outline: none;
@@ -56,6 +59,10 @@
   margin: 0;
   flex-grow: 1;
   text-align: left;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .filter-buttons {

@@ -1,12 +1,14 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import inputTextReduser from "./inputTextSlice";
-
-import tasksReduser from "./taskSliсe";
+import inputTextReducer from "./inputTextSlice";
+import tasksReducer from "./taskSlice";
+import authReducer from "./authSlice";
 
 const store = configureStore({
   reducer: combineReducers({
-    text: inputTextReduser,
-    tasks: tasksReduser,
+    text: inputTextReducer,
+    tasks: tasksReducer,
+    auth: authReducer,
   }),
 });
+
 export default store;

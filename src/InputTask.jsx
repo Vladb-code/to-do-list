@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { change, zero } from "./redux/inputTextSlice";
-import { add } from "./redux/taskSliсe";
+import { add, createTasks } from "./redux/taskSlice";
 const InputTask = () => {
   const dispatch = useDispatch();
   const { value } = useSelector((store) => store.text);
@@ -11,7 +11,7 @@ const InputTask = () => {
 
   const addNewTask = () => {
     if (value.trim() !== "") {
-      dispatch(add(value));
+      dispatch(createTasks(value));
     }
   };
 

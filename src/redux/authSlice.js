@@ -1,4 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
 const API_URL = import.meta.env.VITE_API_URL;
 const getSavedUser = () => {
   const user = localStorage.getItem("user");
@@ -10,19 +12,21 @@ const getSavedUser = () => {
   }
 };
 
+const api = axios.create({
+  baseURL: API_URL,
+  headers: { "Content-Type": "application/json" },
+});
+
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!response.ok) throw new Error("Неверный email или пароль");
-      return await response.json();
+      const response = await api.post("/auth/login", { email, password });
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(
+        error.response?.data?.message || "Неверный email или пароль"
+      );
     }
   }
 );
@@ -31,15 +35,12 @@ export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/users/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData),
-      });
-      if (!response.ok) throw new Error("Ошибка при регистрации");
-      return await response.json();
+      const response = await api.post("/users/register", userData);
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(
+        error.response?.data?.message || "Ошибка при регистрации"
+      );
     }
   }
 );
@@ -64,7 +65,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -75,6 +75,7 @@ const authSlice = createSlice({
 
         const userValue =
           action.payload.user?.username || action.payload.user?.email || "User";
+
         state.user = userValue;
         state.token = action.payload.token;
 
@@ -85,7 +86,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -93,8 +93,10 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isLoggedIn = true;
+
         const userValue =
           action.payload.user?.username || action.payload.user?.email || "User";
+
         state.user = userValue;
         state.token = action.payload.token;
 

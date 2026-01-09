@@ -1,30 +1,54 @@
 import { useSelector, useDispatch } from "react-redux";
-import Header from "./Header";
-import InputTask from "./InputTask";
-import ToDoList from "./ToDoList";
-import AuthForm from "./AuthForm";
+import Header from "./components/Header";
+import InputTask from "./components/InputTask";
+import ToDoList from "./components/ToDoList";
+import AuthForm from "./components/AuthForm";
 import { logout } from "./redux/authSlice";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 import "./App.css";
 
 const App = () => {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <div className="todo-app">
-      {!isLoggedIn ? (
-        <AuthForm />
-      ) : (
-        <div className="box">
-          <div className="user-info">
-            <span>Привет, {user}!</span>
-            <button onClick={() => dispatch(logout())}>Выйти</button>
-          </div>
-          <Header />
-          <InputTask />
-          <ToDoList />
-        </div>
-      )}
+      <Routes>
+        <Route
+          path="/login"
+          element={!isLoggedIn ? <AuthForm /> : <Navigate to="/" />}
+        />
+
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? (
+              <div className="box">
+                <div className="user-info"></div>
+                <Header />
+                <InputTask />
+                <ToDoList />
+                <button onClick={handleLogout}>log out</button>
+              </div>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+      </Routes>
     </div>
   );
 };

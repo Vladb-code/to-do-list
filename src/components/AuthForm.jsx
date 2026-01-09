@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, registerUser } from "./redux/authSlice";
+import { loginUser, registerUser } from "../redux/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const AuthForm = () => {
   const [isRegister, setIsRegister] = useState(false);
@@ -13,7 +14,15 @@ const AuthForm = () => {
   });
 
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
+  const { isLoggedIn, loading, error } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,9 +40,7 @@ const AuthForm = () => {
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>{isRegister ? "Создать аккаунт" : "Вход в систему"}</h2>
 
-        {error && (
-          <p style={{ color: "#ff6b6b", fontSize: "0.8rem" }}>{error}</p>
-        )}
+        {error && <p>{error}</p>}
 
         <input
           type="email"

@@ -1,21 +1,31 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { logout } from "./authSlice";
+
 const API_URL = import.meta.env.VITE_API_URL;
+
+const api = axios.create({
+  baseURL: API_URL,
+});
+
 export const getTasks = createAsyncThunk(
   "todos/getTasks",
-  async (state, thunkAPI) => {
-    console.log(thunkAPI);
+  async (_, thunkAPI) => {
+    const state = thunkAPI.getState();
+
     try {
-      const store = thunkAPI.getState();
-      const response = await fetch(`${API_URL}/todos?isCompleted=false`, {
+      const token = state.auth.token;
+      const response = await api.get(`/todos`, {
         headers: {
-          Authorization: `Bearer ${store.auth.token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-      const data = await response.json();
 
-      return data;
+      return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Ошибка при загрузке задач"
+      );
     }
   }
 );
@@ -23,21 +33,24 @@ export const getTasks = createAsyncThunk(
 export const createTasks = createAsyncThunk(
   "todos/createTasks",
   async (title, thunkAPI) => {
+    const state = thunkAPI.getState();
     try {
-      const store = thunkAPI.getState();
-      const response = await fetch(`${API_URL}/todos`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${store.auth.token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ title: title }),
-      });
-      const data = await response.json();
+      const token = state.auth.token;
+      const response = await api.post(
+        `/todos`,
+        { title: title },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      return data;
+      return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Ошибка при создании задачи"
+      );
     }
   }
 );
@@ -45,19 +58,20 @@ export const createTasks = createAsyncThunk(
 export const deleteTasks = createAsyncThunk(
   "todos/deleteTasks",
   async (id, thunkAPI) => {
+    const state = thunkAPI.getState();
     try {
-      const store = thunkAPI.getState();
-      const response = await fetch(`${API_URL}/todos/${id}`, {
-        method: "DELETE",
+      const token = state.auth.token;
+      const response = await api.delete(`/todos/${id}`, {
         headers: {
-          Authorization: `Bearer ${store.auth.token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-      const data = await response.json();
 
-      return { ...data, id };
+      return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Ошибка при удалении задачи"
+      );
     }
   }
 );
@@ -65,21 +79,24 @@ export const deleteTasks = createAsyncThunk(
 export const editTasks = createAsyncThunk(
   "todos/editTasks",
   async ({ id, newTitle }, thunkAPI) => {
+    const state = thunkAPI.getState();
     try {
-      const store = thunkAPI.getState();
-      const response = await fetch(`${API_URL}/todos/${id}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${store.auth.token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ title: newTitle }),
-      });
-      const data = await response.json();
+      const token = state.auth.token;
+      const response = await api.patch(
+        `/todos/${id}`,
+        { title: newTitle },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      return { ...data, id, newTitle };
+      return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Ошибка при изменении задачи"
+      );
     }
   }
 );
@@ -88,18 +105,24 @@ export const isDoneCheckedTasks = createAsyncThunk(
   "todos/isDoneCheckedTasks",
   async (id, thunkAPI) => {
     try {
-      const store = thunkAPI.getState();
-      const response = await fetch(`${API_URL}/todos/${id}/isCompleted`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${store.auth.token}`,
-        },
-      });
-      const data = await response.json();
+      const state = thunkAPI.getState();
+      const token = state.auth.token;
 
-      return { ...data, id };
+      const response = await api.patch(
+        `/todos/${id}/isCompleted`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return { ...response.data, id };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Ошибка при обновлении статуса"
+      );
     }
   }
 );
@@ -110,30 +133,7 @@ const taskSliсe = createSlice({
     items: [],
     loading: false,
   },
-  reducers: {
-    add(state, action) {
-      state.value.push({
-        id: crypto.randomUUID(),
-        title: action.payload,
-        isDone: false,
-      });
-    },
-    deleteTask(state, action) {
-      state.value = state.value.filter((task) => task.id !== action.payload);
-    },
-    edit(state, action) {
-      state.value = state.value.map((item) =>
-        item.id === action.payload.id
-          ? { ...item, title: action.payload.newTitle }
-          : item
-      );
-    },
-    isDoneCheckedTask(state, action) {
-      state.value = state.value.map((item) =>
-        item.id === action.payload ? { ...item, isDone: !item.isDone } : item
-      );
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getTasks.pending, (state, action) => {
@@ -172,7 +172,7 @@ const taskSliсe = createSlice({
       .addCase(editTasks.fulfilled, (state, action) => {
         state.items = state.items.map((item) =>
           item.id === action.payload.id
-            ? { ...item, title: action.payload.newTitle }
+            ? { ...item, title: action.payload.title }
             : item
         );
         state.loading = false;
@@ -185,12 +185,16 @@ const taskSliсe = createSlice({
       .addCase(isDoneCheckedTasks.fulfilled, (state, action) => {
         state.items = state.items.map((item) =>
           item.id === action.payload.id
-            ? { ...item, isDone: !item.isDone }
+            ? { ...item, isCompleted: !item.isCompleted }
             : item
         );
         state.loading = false;
       })
       .addCase(isDoneCheckedTasks.rejected, (state, action) => {});
+    builder.addCase(logout, (state) => {
+      state.items = [];
+      state.loading = false;
+    });
   },
 });
 

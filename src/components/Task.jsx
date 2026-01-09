@@ -1,13 +1,6 @@
 import { useDispatch } from "react-redux";
 
-import {
-  deleteTask,
-  deleteTasks,
-  edit,
-  editTasks,
-  isDoneCheckedTask,
-  isDoneCheckedTasks,
-} from "./redux/taskSlice";
+import { deleteTasks, editTasks, isDoneCheckedTasks } from "../redux/taskSlice";
 import { useState } from "react";
 
 const Task = ({ task }) => {
@@ -39,7 +32,7 @@ const Task = ({ task }) => {
     <div className="task">
       {!isEdit ? (
         <p
-          className={task.isDone ? "active" : ""}
+          className={task.isCompleted ? "active" : ""}
           onClick={isDoneChecked}
           style={{ cursor: "pointer", userSelect: "none" }}
         >

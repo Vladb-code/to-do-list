@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Task from "./Task";
+import Task from "../components/Task";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasks } from "../redux/taskSlice";
 
